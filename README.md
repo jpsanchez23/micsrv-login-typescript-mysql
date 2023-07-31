@@ -1,7 +1,5 @@
 # Steps
 
-Pasos a seguir
-
 1. Install dependencies:
 ```
 npm install
