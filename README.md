@@ -2,18 +2,20 @@
 
 Pasos a seguir
 
-1. Instalar dependencias con:
+1. Install dependencies:
 ```
-npm i
+npm install
 ```
 
-2. Crear archivo `.env` siguiendo ejemplo de archivo `.env.example`.
+2. Create file `.env` following the exaple in the `.env.example` file. Development was done with
+ mysql, you can read more about [TypeORM](https://typeorm.io/) in their website.
 
+3. Run migrations:
+```
+npm run db:migrate
+```
 
-3. Cambiar el tipo de base de datos según la necesitada en archivo `src/data-source.ts`. Para mayor información visitar la documentación oficial de [TypeORM](https://typeorm.io/).
-
-
-4. Ejecutar comando:
+4. Run command:
 ```
 npm run start
 ```

@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import { AppDataSource } from "../data-source";
+import { validateRoles } from '../seeds/initial-seed';
 import * as dotenv from "dotenv";
 
 dotenv.config({ path: __dirname+'../../.env' });
@@ -10,7 +11,9 @@ export class Server {
     app: Express;
     port: Number;
     paths: {
-        ruta: String
+        auth: string,
+        users: string,
+        roles: string
     };
 
     constructor() {
@@ -19,48 +22,48 @@ export class Server {
         this.port = parseInt( process.env.PORT );
 
         this.paths = {
-            ruta:          '/api/v1/ruta'
+            auth:           '/api/v1/auth',
+            users:          '/api/v1/users',
+            roles:          '/api/v1/roles'
         }
 
-        //conexión db
-        this.conectarDB();
+        this.conectDB();
 
-        //middlewares
         this.middlewares();
 
-        //routes
         this.routes();
     }
 
-    conectarDB(){
+    conectDB(){
         AppDataSource.initialize().then(async () => {
-            console.log('Conectado a base de datos');
+            console.log('Database connected');
+            validateRoles();
 
         }).catch(error => console.log(error))
     }
 
     middlewares(){
 
-        // CORS
         this.app.use( cors() );
 
-        // Lectura y parseo del body
         this.app.use( express.json() );
 
-        // directorio publico
+        // Public 
         //this.app.use( express.static('public'));
     }
 
     routes(){
-        this.app.use( this.paths.ruta , require('../routes/ruta') );
+        this.app.use( this.paths.auth, require('../routes/auth') );
+        this.app.use( this.paths.roles, require('../routes/roles') );
+        this.app.use( this.paths.users , require('../routes/users') );
         this.app.get('*', (req: Request, res: Response) => {
-            res.status(404).json({msg: 'Express + TypeScript Server'});
+            res.status(404).json({msg: 'Not Found'});
         });
     }
 
     listen(){
         this.app.listen(this.port, () => {
-            console.log('Sevidor corriendo en puerto', this.port);
+            console.log('Server running on port', this.port);
         });
     }
 }
